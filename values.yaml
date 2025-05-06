@@ -7,3 +7,12 @@ images:
 dags:
   persistence:
     enabled: false  # DAG'lar image'in içinde
+
+gitSync:
+    enabled: true
+    repo: https://github.com/asimerkut/airflow.git
+    branch: main
+    subPath: dags
+    syncInterval: 30
+    depth: 1
+    wait: 5

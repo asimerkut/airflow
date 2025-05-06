@@ -24,3 +24,7 @@ airflow users create \
   --email airflow@example.com \
   --password airflow123
 
+
+
+helm upgrade airflow apache-airflow/airflow \
+  -n airflow -f values.yaml

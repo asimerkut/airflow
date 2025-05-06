@@ -11,5 +11,5 @@ with DAG(
 ) as dag:
     t1 = BashOperator(
         task_id="say_hello",
-        bash_command="echo 'Merhaba, Airflow projesi çalışıyor!'"
+        bash_command="echo 'Super bir sekilde Merhaba, Airflow projesi çalışıyor!'"
     )

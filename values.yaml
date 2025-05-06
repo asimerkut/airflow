@@ -1,0 +1,9 @@
+images:
+  airflow:
+    repository: innovai/airflow-custom
+    tag: latest
+    pullPolicy: IfNotPresent
+
+dags:
+  persistence:
+    enabled: false  # DAG'lar image'in içinde

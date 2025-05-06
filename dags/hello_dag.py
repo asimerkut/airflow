@@ -1,6 +1,9 @@
+# dags/hello_dag.py
+
 from airflow import DAG
-from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime
+from src.utils import hello  # ✅ src içinden fonksiyonu çağır
 
 with DAG(
     dag_id="hello_dag",
@@ -9,7 +12,7 @@ with DAG(
     catchup=False,
     tags=["example"]
 ) as dag:
-    t1 = BashOperator(
-        task_id="say_hello",
-        bash_command="echo 'OOOOO oluyor Super bir sekilde Merhaba, Airflow projesi çalışıyor!'"
+    t1 = PythonOperator(
+        task_id="call_hello_from_src",
+        python_callable=hello
     )

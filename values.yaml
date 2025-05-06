@@ -13,3 +13,7 @@ dags:
     repo: https://github.com/asimerkut/airflow.git
     branch: main
     subPath: dags
+
+env:
+  - name: PYTHONPATH
+    value: /opt/airflow/dags

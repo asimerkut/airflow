@@ -15,6 +15,11 @@ kullanici olustur
 kubectl exec -it -n airflow deploy/airflow-webserver -- bash
 
 
+# Custom container ı olustur
+docker build -t innovai/airflow-custom:latest .
+docker push innovai/airflow-custom:latest
+
+
 
 airflow users create \
   --username airflow \

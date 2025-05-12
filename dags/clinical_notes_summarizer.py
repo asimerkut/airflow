@@ -2,7 +2,6 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
-from airflow.models import Connection
 import logging
 
 default_args = {
@@ -15,27 +14,25 @@ default_args = {
 }
 
 def read_shs_tani_records():
-    # Get connection directly from Airflow
-    conn = Connection.get_connection_from_secrets('medscan_postgres')
-    logging.info(f"Retrieved connection: {conn}")
-    
-    # Create PostgresHook instance with connection
-    pg_hook = PostgresHook(conn)
-    logging.info("Created PostgresHook")
-    
-    # Execute query to fetch 10 records
-    query = "SELECT * FROM shs_tani LIMIT 10"
-    logging.info(f"Executing query: {query}")
-    
     try:
-        records = pg_hook.get_records(query)
+        # Create PostgresHook instance with connection ID
+        pg_hook = PostgresHook(postgres_conn_id='medscan_postgres')
+        logging.info("Created PostgresHook with connection ID: medscan_postgres")
+        
+        # Execute query to fetch 10 records
+        query = "SELECT * FROM shs_tani LIMIT 10"
+        logging.info(f"Executing query: {query}")
+        
+        records = pg_hook.get_records(sql=query)
         logging.info(f"Successfully fetched {len(records)} records")
+        
         # Print records to console
         print("Fetched records from shs_tani table:")
         for record in records:
             print(record)
+            
     except Exception as e:
-        logging.error(f"Error executing query: {str(e)}")
+        logging.error(f"Error in read_shs_tani_records: {str(e)}")
         raise
 
 with DAG(

@@ -15,8 +15,10 @@ kullanici olustur
 kubectl exec -it -n airflow deploy/airflow-webserver -- bash
 
 # Custom container ı olustur
-docker build -t innovai/airflow-custom:latest .
-docker push innovai/airflow-custom:latest
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t innovai/airflow-custom:latest \
+  --push \
+  --provenance=false .
 
 
 airflow users create \
@@ -26,3 +28,15 @@ airflow users create \
   --role Admin \
   --email airflow@example.com \
   --password airflow123
+
+
+# Postgresql kurulum
+
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm repo update
+kubectl create namespace medscan
+helm install medscan-postgres \
+  -n medscan \
+  -f values.yaml \
+  bitnami/postgresql
+

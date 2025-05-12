@@ -1,0 +1,17 @@
+global:
+  postgresql:
+    auth:
+      username: medscan_user
+      password: medscan_pass
+      database: medscan_db
+
+primary:
+  service:
+    type: NodePort
+    nodePorts:
+      postgresql: 31336   # Dış dünyaya açılan port (30000–32767 arasında olmalı)
+  initdb:
+    scripts:
+      init-schemas.sql: |
+        CREATE SCHEMA IF NOT EXISTS dat AUTHORIZATION medscan_user;
+        CREATE SCHEMA IF NOT EXISTS mltrain AUTHORIZATION medscan_user;

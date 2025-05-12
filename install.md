@@ -40,3 +40,18 @@ helm install medscan-postgres \
   -f values.yaml \
   bitnami/postgresql
 
+
+# airflow değişken postgresql
+
+
+*	
+medscan_postgres_conn
+
+
+{
+    "user": "medscan_user",
+    "password": "medscan_pass",
+    "host": "medscan-postgres-postgresql.medscan.svc.cluster.local",
+    "port": "5432",
+    "database": "dataml"
+}

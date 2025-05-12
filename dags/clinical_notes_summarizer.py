@@ -2,6 +2,8 @@ from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
+from airflow.models import Connection
+import logging
 
 default_args = {
     'owner': 'airflow',
@@ -13,33 +15,28 @@ default_args = {
 }
 
 def read_shs_tani_records():
-    # Hardcoded database connection parameters
-    db_params = {
-        'host': 'medscan-postgres-postgresql.medscan.svc.cluster.local',
-        'port': 5432,
-        'database': 'dataml',
-        'user': 'medscan_user',
-        'password': 'medscan_pass'
-    }
+    # Get connection directly from Airflow
+    conn = Connection.get_connection_from_secrets('medscan_postgres')
+    logging.info(f"Retrieved connection: {conn}")
     
-    # Create PostgresHook instance with direct parameters
-    pg_hook = PostgresHook(
-        postgres_conn_id=None,  # We're not using a connection from Airflow
-        host=db_params['host'],
-        port=db_params['port'],
-        database=db_params['database'],
-        user=db_params['user'],
-        password=db_params['password']
-    )
+    # Create PostgresHook instance with connection
+    pg_hook = PostgresHook(conn)
+    logging.info("Created PostgresHook")
     
     # Execute query to fetch 10 records
     query = "SELECT * FROM shs_tani LIMIT 10"
-    records = pg_hook.get_records(query)
+    logging.info(f"Executing query: {query}")
     
-    # Print records to console
-    print("Fetched records from shs_tani table:")
-    for record in records:
-        print(record)
+    try:
+        records = pg_hook.get_records(query)
+        logging.info(f"Successfully fetched {len(records)} records")
+        # Print records to console
+        print("Fetched records from shs_tani table:")
+        for record in records:
+            print(record)
+    except Exception as e:
+        logging.error(f"Error executing query: {str(e)}")
+        raise
 
 with DAG(
     'clinical_notes_summarizer',

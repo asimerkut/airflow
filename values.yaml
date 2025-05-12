@@ -16,3 +16,7 @@ dags:
 env:
   - name: PYTHONPATH
     value: /opt/airflow/dags
+
+airflow:
+  config:
+    AIRFLOW__CORE__TEST_CONNECTION: "True"

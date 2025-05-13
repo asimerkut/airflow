@@ -1,0 +1,19 @@
+# Core dependencies
+sqlalchemy>=1.4.36,<2.0.0  # Compatible with Airflow 2.10.5
+psycopg2-binary>=2.9.9  # PostgreSQL adapter
+python-dotenv>=1.0.0    # For environment variable management
+
+# Airflow dependencies for local development
+apache-airflow>=2.10.5  # For local DAG development
+apache-airflow-providers-postgres>=5.7.1  # For PostgreSQL connections
+apache-airflow-providers-common-sql>=1.7.1  # For SQL operations
+
+# Development dependencies
+pytest>=7.4.0
+black>=23.7.0          # Code formatting
+flake8>=6.1.0         # Code linting
+mypy>=1.5.1          # Type checking
+
+# Additional utilities
+pandas>=2.0.0         # For data manipulation if needed
+numpy>=1.24.0         # For numerical operations if needed 

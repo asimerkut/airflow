@@ -55,3 +55,12 @@ medscan_postgres_conn
     "port": "5432",
     "database": "dataml"
 }
+
+
+
+
+
+# Ortam geliştirme kurulumu
+conda init bash # Terminali kapa aç
+conda env create -f environment.yml
+conda activate medscan

@@ -1,0 +1,8 @@
+# DAG specific dependencies
+python-dotenv>=1.0.0    # For environment variable management
+
+# Note: The following packages are not included here as they will be provided by the Airflow Docker image:
+# - Apache Airflow
+# - SQLAlchemy
+# - psycopg2-binary (included in apache-airflow-providers-postgres)
+# Add any other DAG-specific dependencies below 

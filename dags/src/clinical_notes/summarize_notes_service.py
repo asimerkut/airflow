@@ -3,6 +3,20 @@ from typing import List, Dict, Any
 from langchain.llms import Ollama
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+import json
+import re
+
+def extract_json_from_text(text: str) -> dict:
+    """Extract JSON from text that might contain markdown or other formatting."""
+    # Try to find JSON pattern
+    json_pattern = r'\{[\s\S]*\}'
+    match = re.search(json_pattern, text)
+    if match:
+        try:
+            return json.loads(match.group())
+        except json.JSONDecodeError:
+            return None
+    return None
 
 def summarize() -> List[Dict[Any, Any]]:
     """
@@ -24,13 +38,20 @@ def summarize() -> List[Dict[Any, Any]]:
     # Create prompt template for summarization
     prompt_template = PromptTemplate(
         input_variables=["note"],
-        template="""Please provide a very concise summary of the following medical note in Turkish. 
-        Focus only on the most critical medical information.
-        Maximum 2-3 sentences.
-        Remove all personal information.
-        Format: Just the summary, no explanations or translations.
+        template="""Summarize this medical note in English with these 4 sections:
 
-        Note: {note}"""
+SUBJECTIVE: Patient's symptoms and history
+OBJECTIVE: Findings and measurements
+ASSESSMENT: Diagnosis
+PLAN: Treatment plan
+
+Rules:
+- Keep it brief
+- Use only information from the text
+- Remove personal data
+- Leave section empty if no information
+
+Note: {note}"""
     )
     
     # Create chain
@@ -46,16 +67,20 @@ def summarize() -> List[Dict[Any, Any]]:
         print(note['epikriz_aciklama'])
         print("-" * 50)
         
-        # Generate summary
-        summary = chain.run(note['epikriz_aciklama'])
-        
-        print("Summary:")
-        print(summary)
-        print("-" * 50)
-        
-        # Add summary to the note dictionary
-        note['summary'] = summary
-        summarized_notes.append(note)
+        try:
+            # Get the response
+            response = chain.invoke({"note": note['epikriz_aciklama']})
+            print("Summary:")
+            print(response['text'])
+            print("-" * 50)
+            
+            # Add summary to the note dictionary
+            note['summary'] = response['text']
+            summarized_notes.append(note)
+            
+        except Exception as e:
+            print(f"Error processing note {i}: {str(e)}")
+            continue
     
     return summarized_notes
 

@@ -25,7 +25,7 @@ class ClinicalNotesSummarizerDAO:
             query = text("""
                 SELECT epikriz_aciklama 
                 FROM shs_takip 
-                LIMIT 10
+                LIMIT 1
             """)
             
             result = session.execute(query)

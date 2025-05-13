@@ -47,7 +47,6 @@ helm install medscan-postgres \
 *	
 medscan_postgres_conn
 
-
 {
     "user": "medscan_user",
     "password": "medscan_pass",
@@ -56,6 +55,13 @@ medscan_postgres_conn
     "database": "dataml"
 }
 
+
+# Airflow variables
+DATAML_DB_HOST=medscan-postgres-postgresql.medscan.svc.cluster.local
+DATAML_DB_PORT=5432
+DATAML_DB_NAME=dataml
+DATAML_DB_USER=medscan_user
+DATAML_DB_PASSWORD=medscan_pass
 
 
 

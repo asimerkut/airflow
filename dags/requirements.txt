@@ -1,5 +1,8 @@
 # DAG specific dependencies
 python-dotenv>=1.0.0    # For environment variable management
+langchain>=0.1.0        # For LLM integration
+langchain-community>=0.0.10  # For Ollama integration
+ollama>=0.1.6          # For Ollama API client
 
 # Note: The following packages are not included here as they will be provided by the Airflow Docker image:
 # - Apache Airflow

@@ -62,4 +62,13 @@ def get_db_password() -> str:
 
 def get_db_connection_string() -> str:
     """Get database connection string from environment variables."""
-    return f"postgresql://{get_db_user()}:{get_db_password()}@{get_db_host()}:{get_db_port()}/{get_db_name()}" 
+    return f"postgresql://{get_db_user()}:{get_db_password()}@{get_db_host()}:{get_db_port()}/{get_db_name()}"
+
+# Ollama specific getters
+def get_ollama_base_url() -> str:
+    """Get Ollama base URL from environment variables."""
+    return get('OLLAMA_BASE_URL', 'http://host.minikube.internal:11434')
+
+def get_ollama_model() -> str:
+    """Get Ollama model name from environment variables."""
+    return get('OLLAMA_MODEL', 'gemma3:27b') 

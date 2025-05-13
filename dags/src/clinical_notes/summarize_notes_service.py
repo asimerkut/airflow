@@ -3,20 +3,9 @@ from typing import List, Dict, Any
 from langchain.llms import Ollama
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
+from ..util.env_util import get_ollama_base_url, get_ollama_model
 import json
 import re
-
-def extract_json_from_text(text: str) -> dict:
-    """Extract JSON from text that might contain markdown or other formatting."""
-    # Try to find JSON pattern
-    json_pattern = r'\{[\s\S]*\}'
-    match = re.search(json_pattern, text)
-    if match:
-        try:
-            return json.loads(match.group())
-        except json.JSONDecodeError:
-            return None
-    return None
 
 def summarize() -> List[Dict[Any, Any]]:
     """
@@ -29,10 +18,10 @@ def summarize() -> List[Dict[Any, Any]]:
     dao = ClinicalNotesSummarizerDAO()
     notes = dao.get_medical_notes()
     
-    # Initialize Ollama LLM
+    # Initialize Ollama LLM with settings from environment
     llm = Ollama(
-        model="gemma3:27b",
-        base_url="http://localhost:11434"
+        model=get_ollama_model(),
+        base_url=get_ollama_base_url()
     )
     
     # Create prompt template for summarization

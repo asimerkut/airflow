@@ -2,6 +2,7 @@ images:
   airflow:
     repository: innovai/airflow-custom
     tag: latest
+    pullPolicy: Always
 
 dags:
   persistence:

@@ -1,7 +1,7 @@
 from datetime import datetime, timedelta
 from airflow import DAG
 from airflow.operators.python import PythonOperator
-from dags.src.clinical_notes.summarize_notes_service import get_clinical_note
+from src.clinical_notes.summarize_notes_service import get_clinical_note
 
 default_args = {
     'owner': 'airflow',

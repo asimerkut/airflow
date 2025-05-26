@@ -14,12 +14,18 @@ minikube service -n airflow airflow-webserver
 kullanici olustur
 kubectl exec -it -n airflow deploy/airflow-webserver -- bash
 
+# https://hub.docker.com/repositories/innovai
+
 # Custom container ı olustur
 docker buildx build --platform linux/amd64,linux/arm64 \
   -t innovai/airflow-custom:latest \
   --push \
   --provenance=false .
 
+# multi platform image olusturmak icin
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -t innovai/airflow-custom:latest \
+  --push .
 
 airflow users create \
   --username airflow \

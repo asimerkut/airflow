@@ -2,9 +2,11 @@
 python-dotenv>=1.0.0    # For environment variable management
 langchain>=0.1.0        # For LLM integration
 langchain-community>=0.0.10  # For Ollama integration
+langchain-huggingface>=0.0.5  # For HuggingFace embeddings
 ollama>=0.1.6          # For Ollama API client
 sentence-transformers>=2.2.2  # For BioBERT integration
-torch>=2.2.0+cu121     # PyTorch with CUDA 12.1 support
+torch>=2.2.0     # PyTorch CPU-only version (BioBERT runs on CPU)
+einops>=0.8.1    # Required for Nomic BERT model tensor operations
 
 # Note: The following packages are not included here as they will be provided by the Airflow Docker image:
 # - Apache Airflow

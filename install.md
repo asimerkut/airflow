@@ -23,9 +23,7 @@ docker buildx build --platform linux/amd64,linux/arm64 \
   --provenance=false .
 
 # multi platform image olusturmak icin
-docker buildx build --platform linux/amd64,linux/arm64 \
-  -t innovai/airflow-custom:latest \
-  --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t innovai/airflow-custom:v1.0 --push .
 
 airflow users create \
   --username airflow \

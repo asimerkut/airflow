@@ -12,7 +12,7 @@ default_args = {
     'retries': 1,
 }
 
-version = 4
+version = 5
 data_path = '/opt/airflow/dags/repo/dags/data/'
 
 def print_context(**context):
@@ -44,7 +44,7 @@ def join_csv_files(**context) -> str:
     df1 = pd.read_json(json1, orient='records')
     df2 = pd.read_json(json2, orient='records')
 
-    joined_df = pd.merge(df1, df2, on='Id', how='outer')
+    joined_df = pd.merge(df1, df2, on='Id', how='inner')
     print("read_csv_to_df")
     print(joined_df)
     ret_json = joined_df.to_json(orient='records')
@@ -54,6 +54,11 @@ def join_csv_files(**context) -> str:
 def join_print(**context) -> None:
     print("join_print context")
     print_context(**context)
+
+    json_data = context['ti'].xcom_pull(task_ids='join_csv_files')
+    df = pd.read_json(json_data, orient='records')
+    print("Final joined DataFrame\n"+df.to_json(orient='records'))
+
     pass
 
 

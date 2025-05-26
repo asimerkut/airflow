@@ -21,17 +21,20 @@ class ClusterRejectionDAO:
 
     def get_rejection_descriptions(self) -> List[Dict[str, Any]]:
         """
-        Fetch rejection descriptions from shs_islem table.
+        Fetch rejection descriptions from shs_islem table that don't have embeddings yet.
         
         Returns:
             List[Dict[str, Any]]: List of dictionaries containing islem_sira_no and json_kes_aciklama
+            for records that don't have embeddings yet
         """
         with self.db.create_session_context() as session:
             query = sql_text("""
-                SELECT islem_sira_no, json_kes_aciklama 
-                FROM shs_islem 
-                WHERE json_kes_aciklama IS NOT NULL
-                LIMIT 10
+                SELECT s.islem_sira_no, s.json_kes_aciklama 
+                FROM shs_islem s
+                LEFT JOIN kesinti_embedding k ON s.islem_sira_no::text = k.source_id 
+                    AND k.embedding_type = 'nomic_v2'
+                WHERE s.json_kes_aciklama IS NOT NULL
+                AND k.id IS NULL LIMIT 10
             """)
             
             result = session.execute(query)
@@ -77,7 +80,7 @@ class ClusterRejectionDAO:
                     :cluster_id,
                     :source_id,
                     :text,
-                    :nomic_v2_embedding::vector
+                    CAST(:nomic_v2_embedding AS vector)
                 )
             """)
             

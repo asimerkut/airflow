@@ -75,14 +75,14 @@ class ClusterRejectionService:
     def create_rejection_embedding(self) -> None:
         """
         Create embeddings for rejection descriptions.
-        1. Fetch rejection descriptions from database
-        2. Generate embeddings for each description (if not already exists)
+        1. Fetch rejection descriptions from database (only those without embeddings)
+        2. Generate embeddings for each description
         3. Save embeddings to database
         """
         try:
-            # Get rejection descriptions from database
+            # Get rejection descriptions from database (only those without embeddings)
             rejections = self.dao.get_rejection_descriptions()
-            logger.info(f"Fetched {len(rejections)} rejection descriptions")
+            logger.info(f"Fetched {len(rejections)} rejection descriptions without embeddings")
             
             # Process each rejection and create embeddings
             for rejection in rejections:
@@ -98,12 +98,6 @@ class ClusterRejectionService:
                         logger.warning(f"Skipping record with no source_id")
                         continue
 
-                    # Check if embedding already exists
-                    embedding_type = "nomic_v2"
-                    if self.dao.check_embedding_exists(source_id, embedding_type):
-                        logger.info(f"Embedding already exists for source_id {source_id}, skipping...")
-                        continue
-                    
                     # Generate embedding using Nomic v2 in CPU mode
                     with torch.no_grad():  # Disable gradient calculation for inference
                         # embed_documents returns a list, we take the first (and only) element
@@ -113,7 +107,7 @@ class ClusterRejectionService:
                     
                     # Save to database
                     self.dao.insert_rejection_embedding(
-                        embedding_type=embedding_type,
+                        embedding_type="nomic_v2",
                         text=text,
                         nomic_v2_embedding=embedding_list,  # Convert to list before passing
                         source_id=source_id

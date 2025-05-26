@@ -4,15 +4,74 @@ from langchain.llms import Ollama
 from langchain.prompts import PromptTemplate
 from langchain.chains import LLMChain
 from ..util.env_util import get_ollama_base_url, get_ollama_model
+from ..util.db_util import DatabaseManager
+from sqlalchemy import text
 import json
 import re
 
-def summarize() -> List[Dict[Any, Any]]:
+def parse_soap_sections(summary_text: str) -> Dict[str, str]:
     """
-    Retrieves medical notes from the database and summarizes them using Ollama LLM.
+    Parse the SOAP sections from a summary text.
     
+    Args:
+        summary_text (str): The summary text with SOAP sections
+        
     Returns:
-        List[Dict[Any, Any]]: List of medical notes with their summaries
+        Dict[str, str]: Dictionary with 'S', 'O', 'A', 'P' keys and their content
+    """
+    sections = {
+        'S': '',
+        'O': '',
+        'A': '',
+        'P': ''
+    }
+    
+    # Clean up asterisks from the text
+    summary_text = summary_text.replace('*', '')
+    
+    # Simple approach: split by section headers
+    lines = summary_text.split('\n')
+    current_section = None
+    
+    for line in lines:
+        line = line.strip()
+        if "SUBJECTIVE:" in line:
+            current_section = 'S'
+            # Remove the header from the content
+            content = line.replace("SUBJECTIVE:", "").strip()
+            if content:
+                sections[current_section] += content + "\n"
+        elif "OBJECTIVE:" in line:
+            current_section = 'O'
+            # Remove the header from the content
+            content = line.replace("OBJECTIVE:", "").strip()
+            if content:
+                sections[current_section] += content + "\n"
+        elif "ASSESSMENT:" in line:
+            current_section = 'A'
+            # Remove the header from the content
+            content = line.replace("ASSESSMENT:", "").strip()
+            if content:
+                sections[current_section] += content + "\n"
+        elif "PLAN:" in line:
+            current_section = 'P'
+            # Remove the header from the content
+            content = line.replace("PLAN:", "").strip()
+            if content:
+                sections[current_section] += content + "\n"
+        elif current_section and line:
+            sections[current_section] += line + "\n"
+    
+    # Trim trailing newlines
+    for key in sections:
+        sections[key] = sections[key].strip()
+    
+    return sections
+
+def summarize() -> None:
+    """
+    Retrieves medical notes from the database, summarizes them using Ollama LLM,
+    and saves each summary immediately after processing.
     """
     # Initialize DAO and get notes
     dao = ClinicalNotesSummarizerDAO()
@@ -38,7 +97,9 @@ Rules:
 - Keep it brief
 - Use only information from the text
 - Remove personal data
-- Leave section empty if no information
+- If a section has no relevant information, write NULL for that section
+- Do not make up information
+- If the entire note is empty or has no useful information, return NULL for all sections
 
 Note: {note}"""
     )
@@ -46,32 +107,14 @@ Note: {note}"""
     # Create chain
     chain = LLMChain(llm=llm, prompt=prompt_template)
     
-    print("\n=== Medical Notes and Summaries ===")
-    summarized_notes = []
-    
-    for i, note in enumerate(notes, 1):
-        print(f"\nNote {i}:")
-        print("-" * 50)
-        print("Original Note:")
-        print(note['epikriz_aciklama'])
-        print("-" * 50)
-        
+    for note in notes:
         try:
-            # Get the response
+            # Get the response and save immediately
             response = chain.invoke({"note": note['epikriz_aciklama']})
-            print("Summary:")
-            print(response['text'])
-            print("-" * 50)
-            
-            # Add summary to the note dictionary
-            note['summary'] = response['text']
-            summarized_notes.append(note)
-            
-        except Exception as e:
-            print(f"Error processing note {i}: {str(e)}")
+            soap_sections = parse_soap_sections(response['text'])
+            dao.save_note_summary(note['takip_no'], soap_sections)
+        except Exception:
             continue
-    
-    return summarized_notes
 
 
 

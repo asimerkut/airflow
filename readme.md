@@ -27,6 +27,12 @@ helm upgrade --install airflow apache-airflow/airflow \
   --create-namespace \
   -f values.yaml
 
+# kubernetes içinden connection testi, terminal>
+minikube ssh
+nc -vz host.minikube.internal 5432
+
+# airflow versiyonu v2.10.5 olmali
+pip show apache-airflow
 
 
 

@@ -16,14 +16,12 @@ kubectl exec -it -n airflow deploy/airflow-webserver -- bash
 
 # https://hub.docker.com/repositories/innovai
 
-# Custom container ı olustur
-docker buildx build --platform linux/amd64,linux/arm64 \
-  -t innovai/airflow-custom:latest \
-  --push \
-  --provenance=false .
+# Custom container ı olustur - version burada & values.yaml dosyası degistirilmeli
+docker buildx build -t innovai/airflow-custom:v1.??? --push --provenance=false .
+helm upgrade airflow apache-airflow/airflow -n airflow -f values.yaml --force
 
 # multi platform image olusturmak icin
-docker buildx build --platform linux/amd64,linux/arm64 -t innovai/airflow-custom:v1.0 --push .
+docker buildx build --platform linux/amd64,linux/arm64 -t innovai/airflow-custom:v1.8 --push .
 
 airflow users create \
   --username airflow \
@@ -48,7 +46,6 @@ helm install medscan-postgres bitnami/postgresql \
 
 
 # airflow değişken postgresql
-
 
 *	
 medscan_postgres_conn

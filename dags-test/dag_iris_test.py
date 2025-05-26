@@ -12,7 +12,7 @@ default_args = {
     'retries': 1,
 }
 
-version = 5
+version = 1
 data_path = '/opt/airflow/dags/repo/dags/data/'
 
 def print_context(**context):
@@ -62,7 +62,7 @@ def join_print(**context) -> None:
     pass
 
 
-with DAG('csv_join_dag', default_args=default_args, schedule_interval=None) as dag:
+with DAG('dag_iris_01', default_args=default_args, schedule_interval=None) as dag:
 
     read_csv_file1 = PythonOperator(
         task_id='read_csv_file1',

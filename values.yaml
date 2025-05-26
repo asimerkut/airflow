@@ -1,7 +1,7 @@
 images:
   airflow:
     repository: innovai/airflow-custom
-    tag: v1.1
+    tag: v1.8
     pullPolicy: Always
 
 dags:
@@ -20,4 +20,6 @@ env:
 
 airflow:
   config:
-    AIRFLOW__CORE__TEST_CONNECTION: "True"
+    core:
+      test_connection: "True"
+

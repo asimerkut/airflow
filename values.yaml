@@ -1,7 +1,7 @@
 images:
   airflow:
     repository: innovai/airflow-custom
-    tag: v1.0
+    tag: v1.1
     pullPolicy: Always
 
 dags:

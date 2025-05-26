@@ -29,7 +29,7 @@ class ClinicalNotesSummarizerDAO:
                 LEFT JOIN epikriz_ozet e ON s.takip_no = e.takip_no
                 WHERE s.epikriz_aciklama IS NOT NULL
                 AND e.takip_no IS NULL
-                LIMIT 10
+                LIMIT 100
             """)
             
             result = session.execute(query)

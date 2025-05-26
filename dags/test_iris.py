@@ -11,12 +11,14 @@ default_args = {
     'retries': 1,
 }
 
+version = 2
 data_path = '/opt/airflow/dags/repo/dags/data/'
 
 def read_csv_to_df(file_path: str) -> pd.DataFrame:
+    print("reading....... : " + file_path)
     df = pd.read_csv(file_path)
     print("read_csv_to_df : "+file_path)
-    print(df.head())
+    print(df)
     return df
 
 
@@ -27,7 +29,7 @@ def join_csv_files(**context) -> pd.DataFrame:
     df2 = read_csv_to_df(file_path2)
     joined_df = pd.merge(df1, df2, on='Id', how='outer')
     print("read_csv_to_df")
-    print(joined_df.head())
+    print(joined_df)
     return joined_df
 
 

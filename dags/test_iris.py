@@ -11,6 +11,8 @@ default_args = {
     'retries': 1,
 }
 
+data_path = '/opt/airflow/dags/repo/dags/data/'
+
 def read_csv_to_df(file_path: str) -> pd.DataFrame:
     df = pd.read_csv(file_path)
     print("read_csv_to_df : "+file_path)
@@ -40,13 +42,13 @@ with DAG('csv_join_dag', default_args=default_args, schedule_interval=None) as d
     read_csv_file1 = PythonOperator(
         task_id='read_csv_file1',
         python_callable=read_csv_to_df,
-        op_kwargs={'file_path': '/opt/airflow/dags/repo/data/iris1.csv'}
+        op_kwargs={'file_path': data_path+'iris1.csv'}
     )
 
     read_csv_file2 = PythonOperator(
         task_id='read_csv_file2',
         python_callable=read_csv_to_df,
-        op_kwargs={'file_path': '/opt/airflow/dags/repo/data/file2.csv'}
+        op_kwargs={'file_path': data_path+'file2.csv'}
     )
 
     join_csv = PythonOperator(

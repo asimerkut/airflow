@@ -86,3 +86,52 @@ class ClinicalNotesSummarizerDAO:
                 
         except Exception as e:
             return False 
+
+    def get_soap_summaries(self) -> List[Dict[Any, Any]]:
+        """
+        Retrieve all SOAP summaries from epikriz_ozet table that don't have BioBERT vectors yet.
+        
+        Returns:
+            List[Dict[Any, Any]]: List of SOAP summaries with takip_no
+        """
+        with self.db.create_session_context() as session:
+            query = text("""
+                SELECT takip_no, 
+                       ozet_s, ozet_o, ozet_a, ozet_p
+                FROM epikriz_ozet
+                WHERE biobert_vector IS NULL
+                AND (ozet_s IS NOT NULL OR ozet_o IS NOT NULL 
+                     OR ozet_a IS NOT NULL OR ozet_p IS NOT NULL)
+            """)
+            
+            result = session.execute(query)
+            return [dict(row) for row in result]
+
+    def save_biobert_vector(self, takip_no: str, vector: List[float]) -> bool:
+        """
+        Save BioBERT vector for a given takip_no.
+        
+        Args:
+            takip_no (str): The takip number
+            vector (List[float]): 768-dimensional BioBERT vector
+            
+        Returns:
+            bool: True if save was successful, False otherwise
+        """
+        try:
+            with self.db.create_session_context() as session:
+                query = text("""
+                    UPDATE epikriz_ozet
+                    SET biobert_vector = :vector
+                    WHERE takip_no = :takip_no
+                """)
+                
+                session.execute(query, {
+                    'takip_no': takip_no,
+                    'vector': vector
+                })
+                session.commit()
+                return True
+                
+        except Exception as e:
+            return False 

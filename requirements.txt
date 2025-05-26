@@ -20,3 +20,5 @@ numpy>=1.24.0         # For numerical operations if needed
 
 langchain>=0.1.0        # For LLM integration
 langchain-community>=0.0.10  # For Ollama integration
+
+sentence-transformers>=2.2.2  # For BioBERT integration

@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 from airflow import DAG
 from airflow.operators.python import PythonOperator
+import json
 
 default_args = {
     'owner': 'airflow',
@@ -11,31 +12,48 @@ default_args = {
     'retries': 1,
 }
 
-version = 3
+version = 4
 data_path = '/opt/airflow/dags/repo/dags/data/'
 
-def read_csv_to_df(file_path: str) -> pd.DataFrame:
+def print_context(**context):
+    def serialize(obj):
+        try:
+            return str(obj)
+        except:
+            return "Unserializable"
+
+    print(json.dumps({k: serialize(v) for k, v in context.items()}, indent=2))
+
+def read_csv_to_df(file_path: str) -> str:
     print("reading....... : " + file_path)
     df = pd.read_csv(file_path)
     print("read_csv_to_df : "+file_path)
     print(df)
-    return df
+    js = df.to_json(orient='records')
+    print(js)
+    return js
 
 
-def join_csv_files(**context) -> pd.DataFrame:
-    file_path1 = context['task_instance'].xcom_pull(task_ids='read_csv_file1')
-    file_path2 = context['task_instance'].xcom_pull(task_ids='read_csv_file2')
-    df1 = read_csv_to_df(file_path1)
-    df2 = read_csv_to_df(file_path2)
+def join_csv_files(**context) -> str:
+    print("join_csv_files context")
+    print_context(**context)
+
+    json1 = context['ti'].xcom_pull(task_ids='read_csv_file1')
+    json2 = context['ti'].xcom_pull(task_ids='read_csv_file2')
+
+    df1 = pd.read_json(json1, orient='records')
+    df2 = pd.read_json(json2, orient='records')
+
     joined_df = pd.merge(df1, df2, on='Id', how='outer')
     print("read_csv_to_df")
     print(joined_df)
-    return joined_df
+    ret_json = joined_df.to_json(orient='records')
+    return ret_json
 
 
 def join_print(**context) -> None:
     print("join_print context")
-    print(context.values())
+    print_context(**context)
     pass
 
 

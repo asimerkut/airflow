@@ -41,10 +41,12 @@ airflow users create \
 helm repo add bitnami https://charts.bitnami.com/bitnami
 helm repo update
 kubectl create namespace medscan
-helm install medscan-postgres \
-  -n medscan \
-  -f values.yaml \
-  bitnami/postgresql
+helm install medscan-postgres bitnami/postgresql \
+  --namespace medscan \
+  --create-namespace \
+  --set auth.enablePostgresUser=true \
+  --set auth.postgresPassword=postgres
+
 
 
 # airflow değişken postgresql

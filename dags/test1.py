@@ -13,7 +13,7 @@ default_args = {
 }
 
 with DAG(
-    'clinical_notes_summarizer',
+    'test1',
     default_args=default_args,
     description='DAG to get clinical notes',
     schedule_interval=timedelta(days=1),
@@ -23,7 +23,7 @@ with DAG(
 ) as dag:
 
     get_notes_task = PythonOperator(
-        task_id='get_clinical_note',
+        task_id='test1',
         python_callable=summarize,
     )
 

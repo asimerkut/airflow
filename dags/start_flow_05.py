@@ -40,27 +40,8 @@ data_path = '/opt/airflow/dags/repo/dags/data/'
 connector_map = dict()
 cmp = {}
 
-def task_LibConnector_create_connector_db_postgres_1012():
-    object_prop = {
-        'host': 'localhost',
-        'port': 5432,
-        'database': 'sgkdb',
-        'user': 'postgres',
-        'password': 'postgres',
-    }
-    object_vars = {
-
-    }
-
-    object_vars, connector_instance = lib_connector.create_connector_db_postgres(cmp=cmp, object_prop=object_prop, object_vars=object_vars)
-    return [object_vars, connector_instance]
 
 def task_LibConnector_create_connector_db_postgres_1006():
-
-    load_dotenv()
-
-    connector_map["1012"] = task_LibConnector_create_connector_db_postgres_1012()
-    connector_map["1006"] = task_LibConnector_create_connector_db_postgres_1006()
 
     object_prop = {
         'host': 'host.docker.internal',
@@ -79,6 +60,10 @@ def task_LibConnector_create_connector_db_postgres_1006():
 
 
 def task_LibCustom_etl_query_1009(**context):
+
+    load_dotenv()
+    connector_map["1006"] = task_LibConnector_create_connector_db_postgres_1006()
+
     rdbms_connector = connector_map.get("1006")[1]
     object_prop = {
         'connector_id': '1006',
@@ -95,7 +80,7 @@ def task_LibCustom_etl_query_1009(**context):
 
 
 
-with DAG('dag_flow_04', default_args=default_args, schedule_interval=None) as dag:
+with DAG('dag_flow_05', default_args=default_args, schedule_interval=None) as dag:
 
     task_LibCustom_etl_query_1009 = PythonOperator(
         task_id='task_LibCustom_etl_query_1009',

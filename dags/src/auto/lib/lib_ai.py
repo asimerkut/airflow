@@ -4,7 +4,7 @@ from datetime import datetime
 
 import matplotlib.pyplot as plt
 from sklearn import metrics
-from ydata_profiling import ProfileReport
+#from ydata_profiling import ProfileReport
 
 import src.auto as auto
 import src.auto.lib.ai.impl_ai as LibAi
@@ -169,11 +169,9 @@ def correlation_matrix(cmp, object_prop, object_vars, df):
 
 
 def describe(cmp, object_prop, object_vars, df):
-    result1 = None
-    result2 = None
     result1 = df.describe(include="all")
-    prof_rep = ProfileReport(df, explorative=True, minimal=True)
-    result2 = prof_rep.to_html()
+    #prof_rep = ProfileReport(df, explorative=True, minimal=True)
+    result2 = None # prof_rep.to_html()
     return object_vars, result1, result2
 
 

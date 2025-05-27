@@ -47,7 +47,6 @@ helm install medscan-postgres bitnami/postgresql \
 
 # airflow değişken postgresql
 
-
 *	
 medscan_postgres_conn
 

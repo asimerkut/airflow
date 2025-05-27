@@ -4,6 +4,29 @@ import pandas as pd
 from airflow import DAG
 from airflow.operators.python import PythonOperator
 import json
+from dotenv import load_dotenv
+from functools import lru_cache
+from pyspark.sql import SparkSession
+import json
+import argparse
+
+import src.auto.lib.lib_ai as lib_ai
+import src.auto.lib.lib_custom as lib_custom
+import src.auto.lib.lib_etl as lib_etl
+import src.auto.lib.lib_connector as lib_connector
+import src.auto.lib.lib_io_rdbms as lib_io_rdbms
+import src.auto.lib.lib_dim as lib_dim
+import src.auto.lib.lib_io_filesys as lib_io_filesys
+import src.auto.lib.lib_io_user as lib_io_user
+import src.auto.lib.lib_stat as lib_stat
+import src.auto.lib.lib_vis as lib_vis
+
+load_dotenv()
+PRM = dict(
+    PRM_FLOW_ID="9c6f81c5-70a7-481d-bb89-adcd2cc81990",
+    PRM_FLOW_NAME="dag_flow_01",
+    PRM_FLOW_DATE="2025-05-26 21:21:58"
+)
 
 default_args = {
     'owner': 'airflow',
@@ -15,77 +38,45 @@ default_args = {
 version = 1
 data_path = '/opt/airflow/dags/repo/dags/data/'
 
-def print_context(**context):
-    def serialize(obj):
-        try:
-            return str(obj)
-        except:
-            return "Unserializable"
+connector_map = dict()
 
-    print(json.dumps({k: serialize(v) for k, v in context.items()}, indent=2))
+def task_LibConnector_create_connector_db_postgres_1012():
+    object_prop = {
+        'host': 'localhost',
+        'port': 5432,
+        'database': 'sgkdb',
+        'user': 'postgres',
+        'password': 'postgres',
+    }
+    object_vars = {
 
-def read_csv_to_df(file_path: str) -> str:
-    print("reading....... : " + file_path)
-    df = pd.read_csv(file_path)
-    print("read_csv_to_df : "+file_path)
-    print(df)
-    js = df.to_json(orient='records')
-    print(js)
-    return js
+    }
 
-
-def join_csv_files(**context) -> str:
-    print("join_csv_files context")
-    print_context(**context)
-
-    json1 = context['ti'].xcom_pull(task_ids='read_csv_file1')
-    json2 = context['ti'].xcom_pull(task_ids='read_csv_file2')
-
-    df1 = pd.read_json(json1, orient='records')
-    df2 = pd.read_json(json2, orient='records')
-
-    joined_df = pd.merge(df1, df2, on='Id', how='inner')
-    print("read_csv_to_df")
-    print(joined_df)
-    ret_json = joined_df.to_json(orient='records')
-    return ret_json
+    object_vars, connector_instance = lib_connector.create_connector_db_postgres(cmp=cmp, object_prop=object_prop, object_vars=object_vars)
+    return [object_vars, connector_instance]
 
 
-def join_print(**context) -> None:
-    print("join_print context")
-    print_context(**context)
 
-    json_data = context['ti'].xcom_pull(task_ids='join_csv_files')
-    df = pd.read_json(json_data, orient='records')
-    print("Final joined DataFrame\n"+df.to_json(orient='records'))
-
-    pass
+connector_map["1012"] = task_LibConnector_create_connector_db_postgres_1012()
+connector_map["1006"] = task_LibConnector_create_connector_db_postgres_1006()
 
 
-with DAG('start_flow_01', default_args=default_args, schedule_interval=None) as dag:
+def task_LibCustom_etl_query_1009(**context):
+    rdbms_connector = connector_map.get("1006")[1]
+    object_prop = {
+        'connector_id': '1006',
+        'query': "select \n  t.takip_no basket_id, \n  t.brans_grup_kodu grup_id, \n  t.tesis_il_kodu loca_id, \n  t.os_ayaktan_yatarak turu_id,\n  TO_CHAR(t.donem_son_tarih, 'YYYYMM') term_id,\n  json_build_object(\n    'tedavi_turu', t.os_ayaktan_yatarak,\n    'brans_kodu', t.brans_kodu,\n\t  'cinsiyet', t.hak_cinsiyet,\n\t  'tesis_kodu', t.tesis_kodu\n  ) AS basket_info  \nfrom shs_takip t",
+    }
+    object_vars = {
 
-    read_csv_file1 = PythonOperator(
-        task_id='read_csv_file1',
-        python_callable=read_csv_to_df,
-        op_kwargs={'file_path': data_path+'iris1.csv'}
-    )
+    }
 
-    read_csv_file2 = PythonOperator(
-        task_id='read_csv_file2',
-        python_callable=read_csv_to_df,
-        op_kwargs={'file_path': data_path+'iris2.csv'}
-    )
+    object_vars, df_query = lib_custom.etl_query(cmp=cmp, object_prop=object_prop, object_vars=object_vars, rdbms_connector=rdbms_connector)
+    return [object_vars, df_query]
 
-    join_csv = PythonOperator(
-        task_id='join_csv_files',
-        python_callable=join_csv_files
-    )
 
-    join_print = PythonOperator(
-        task_id='join_print',
-        python_callable=join_print
-    )
+with DAG('dag_flow_01', default_args=default_args, schedule_interval=None) as dag:
 
-    read_csv_file1 >> join_csv
-    read_csv_file2 >> join_csv
-    join_csv >> join_print
+
+task_LibCustom_etl_query_1009
+

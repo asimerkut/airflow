@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # internal app db: postgres
-PRM_DB_HOST = os.getenv('PRM_DB_HOST',"127.0.0.1")
+PRM_DB_HOST = os.getenv('PRM_DB_HOST',"host.docker.internal")
 PRM_DB_PORT = os.getenv('PRM_DB_PORT',"5432")
 PRM_DB_DATABASE = os.getenv('PRM_DB_DATABASE',"sgkdb")
 PRM_DB_SCHEMA = os.getenv('PRM_DB_SCHEMA',"srvdefinition")

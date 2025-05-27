@@ -30,6 +30,7 @@ helm upgrade --install airflow apache-airflow/airflow \
 # kubernetes içinden connection testi, terminal>
 minikube ssh
 nc -vz host.minikube.internal 5432
+nc -vz host.docker.internal 5432
 
 # airflow versiyonu v2.10.5 olmali
 pip show apache-airflow

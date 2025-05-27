@@ -21,7 +21,6 @@ import src.auto.lib.lib_io_user as lib_io_user
 import src.auto.lib.lib_stat as lib_stat
 import src.auto.lib.lib_vis as lib_vis
 
-load_dotenv()
 PRM = dict(
     PRM_FLOW_ID="9c6f81c5-70a7-481d-bb89-adcd2cc81990",
     PRM_FLOW_NAME="dag_flow_01",
@@ -57,6 +56,12 @@ def task_LibConnector_create_connector_db_postgres_1012():
     return [object_vars, connector_instance]
 
 def task_LibConnector_create_connector_db_postgres_1006():
+
+    load_dotenv()
+
+    connector_map["1012"] = task_LibConnector_create_connector_db_postgres_1012()
+    connector_map["1006"] = task_LibConnector_create_connector_db_postgres_1006()
+
     object_prop = {
         'host': 'host.docker.internal',
         'port': 5432,
@@ -71,9 +76,6 @@ def task_LibConnector_create_connector_db_postgres_1006():
     object_vars, connector_instance = lib_connector.create_connector_db_postgres(cmp=cmp, object_prop=object_prop, object_vars=object_vars)
     return [object_vars, connector_instance]
 
-
-connector_map["1012"] = task_LibConnector_create_connector_db_postgres_1012()
-connector_map["1006"] = task_LibConnector_create_connector_db_postgres_1006()
 
 
 def task_LibCustom_etl_query_1009(**context):
@@ -91,18 +93,9 @@ def task_LibCustom_etl_query_1009(**context):
     return [object_vars, df_query]
 
 
-if __name__ == "__main__":
-    print("Flow Start >> " + PRM["PRM_FLOW_ID"])
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--PRM_EXTRA", type=str, default="{}")
-    args = parser.parse_args()
-    prm_arg = json.loads(args.PRM_EXTRA)
-    PRM.update(prm_arg)
-    print(json.dumps(PRM, indent=2))
-    task_LibCustom_etl_query_1009()
-    print("Flow Finish >> " + PRM["PRM_FLOW_ID"])
 
-with DAG('dag_flow_03', default_args=default_args, schedule_interval=None) as dag:
+
+with DAG('dag_flow_04', default_args=default_args, schedule_interval=None) as dag:
 
     task_LibCustom_etl_query_1009 = PythonOperator(
         task_id='task_LibCustom_etl_query_1009',

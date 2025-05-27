@@ -62,7 +62,7 @@ grp_data = "data"
 fs_type = "s3fs" # "lfs"
 s3_bucket_name = "ibucket"
 s3 = {
-    "endpoint_url": "http://localhost:9090",
+    "endpoint_url": "http://host.docker.internal:9090",
     "aws_access_key_id": "admin",
     "aws_secret_access_key": "admin123"
 }

@@ -1,5 +1,11 @@
 FROM apache/airflow:2.10.5-python3.12
 
+USER root
+RUN apt-get update
+RUN apt-get install -y mc
+RUN apt-get install -y nano
+RUN apt-get install -y libgomp1
+
 USER airflow
 
 # Copy DAGs requirements file

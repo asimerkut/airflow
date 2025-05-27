@@ -62,7 +62,7 @@ def join_print(**context) -> None:
     pass
 
 
-with DAG('csv_join_dag', default_args=default_args, schedule_interval=None) as dag:
+with DAG('test_iris_01', default_args=default_args, schedule_interval=None) as dag:
 
     read_csv_file1 = PythonOperator(
         task_id='read_csv_file1',

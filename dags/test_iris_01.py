@@ -12,7 +12,7 @@ default_args = {
     'retries': 1,
 }
 
-version = 5
+version = 1
 data_path = '/opt/airflow/dags/repo/dags/data/'
 
 def print_context(**context):

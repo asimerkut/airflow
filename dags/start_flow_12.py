@@ -204,7 +204,7 @@ if __name__ == "__main__":
 # task_LibEtl_join_1010()[1] >> task_LibIoRdbms_rdbms_write_prediction_1015()[1]
 
 
-version = 1.1
+version = 1.2
 
 from datetime import datetime
 

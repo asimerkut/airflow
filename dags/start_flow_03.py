@@ -58,7 +58,7 @@ def task_LibConnector_create_connector_db_postgres_1012():
 
 def task_LibConnector_create_connector_db_postgres_1006():
     object_prop = {
-        'host': 'localhost',
+        'host': 'host.docker.internal',
         'port': 5432,
         'database': 'dataml',
         'user': 'postgres',
@@ -91,7 +91,18 @@ def task_LibCustom_etl_query_1009(**context):
     return [object_vars, df_query]
 
 
-with DAG('dag_flow_02', default_args=default_args, schedule_interval=None) as dag:
+if __name__ == "__main__":
+    print("Flow Start >> " + PRM["PRM_FLOW_ID"])
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--PRM_EXTRA", type=str, default="{}")
+    args = parser.parse_args()
+    prm_arg = json.loads(args.PRM_EXTRA)
+    PRM.update(prm_arg)
+    print(json.dumps(PRM, indent=2))
+    task_LibCustom_etl_query_1009()
+    print("Flow Finish >> " + PRM["PRM_FLOW_ID"])
+
+with DAG('dag_flow_03', default_args=default_args, schedule_interval=None) as dag:
 
     task_LibCustom_etl_query_1009 = PythonOperator(
         task_id='task_LibCustom_etl_query_1009',

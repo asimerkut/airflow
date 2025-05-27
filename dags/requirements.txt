@@ -21,6 +21,7 @@ hdfs==2.7.3
 pingouin==0.5.5
 paramiko==3.5.1
 boto3==1.38.21
+pyarrow==20.0.0
 
 # Note: The following packages are not included here as they will be provided by the Airflow Docker image:
 # - Apache Airflow

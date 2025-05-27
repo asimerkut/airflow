@@ -1,4 +1,5 @@
 import json
+from types import NoneType
 
 
 def to_return(value):
@@ -46,6 +47,8 @@ class PropTypeEnum:
 
 
 TypeConvert = {
+    None: to_return,
+    NoneType: to_return,
     PropTypeEnum.str: to_str,
     PropTypeEnum.int: to_int,
     PropTypeEnum.bool: to_bool,

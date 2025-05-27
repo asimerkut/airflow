@@ -59,7 +59,7 @@ grp_port_in = "attr_port_in"
 grp_prop = "attr_prop"
 grp_data = "data"
 
-fs_type = "lfs"
+fs_type = "s3fs" # "lfs"
 s3_bucket_name = "ibucket"
 s3 = {
     "endpoint_url": "http://localhost:9090",

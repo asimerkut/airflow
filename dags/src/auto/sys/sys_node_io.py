@@ -6,6 +6,7 @@ from pathlib import Path
 
 import src.auto as auto
 import src.auto.env as env
+from src.auto.conn.db.connector_db_abc import ConnectorDbAbc
 from src.auto.sys import sys_io
 from src.auto.util.enum_util import NodePortEnum
 
@@ -176,12 +177,13 @@ def write_text(flow_id, node_no, port_no, data, port_enum):
     sys_io.write_file_txt(file_name=file_vars, data=data_str_var_str)
 
 
-def get_input_port_args(flow_id:str, def_port_in:list, object_port_in:dict, object_prop:dict, connector_field:str, service_conn):
+def get_input_port_args(flow_id:str, def_port_in:list, object_port_in:dict, # required
+                        object_prop:dict|None, connector_field:str|None, service_conn): # optional
     lib_function_params = {}
-    if connector_field is not None:  # Connector
+    if service_conn is not None and connector_field is not None:  # Connector
         conn_id = object_prop["connector_id"]
-        connector = service_conn.conn_get(flow_id, conn_id)
-        lib_function_params[connector_field] = connector
+        connector_instance = service_conn.conn_get(flow_id, conn_id)
+        lib_function_params[connector_field] = connector_instance
     for index in range(len(def_port_in)):
         if not def_port_in[index]:
             continue
@@ -203,7 +205,7 @@ def get_input_port_args(flow_id:str, def_port_in:list, object_port_in:dict, obje
         # for:def_port_in
     return lib_function_params
 
-def set_output_port_args(flow_id:str, node_no:str, result_tuple:tuple, def_port_out:list, service_conn, base_node):
+def set_output_port_args(flow_id:str, node_no:str, result_tuple:tuple, def_port_out:list, service_conn):
     for index_no in range(len(result_tuple)):
         output = result_tuple[index_no]
         if output is None or index_no >= len(def_port_out):
@@ -212,7 +214,7 @@ def set_output_port_args(flow_id:str, node_no:str, result_tuple:tuple, def_port_
         if index_no > 0:
             out_port_tuple = def_port_out[index_no]
         if out_port_tuple[0] == NodePortEnum.CON:
-            base_node.connector_instance = output # if Cmp is Connector
-            service_conn.conn_add(flow_id, node_no, base_node.connector_instance)
+            if service_conn is not None:
+                service_conn.conn_add(flow_id, node_no, result_tuple[1])
         else:
             write_output(flow_id, node_no, index_no, def_port_out, output)

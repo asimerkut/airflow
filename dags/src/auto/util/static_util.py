@@ -30,6 +30,10 @@ def extract_between_capitals(s):
     else:
         return "?"
 
+def convert_to_tuple(result):
+    if not isinstance(result, tuple):
+        return (result,)
+    return result
 
 spark_pandas_type_cast = {
     "timestamp": "datetime64[ns]",

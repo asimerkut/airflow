@@ -103,7 +103,7 @@ def task_LibEtl_join_1010():
 @lru_cache(maxsize=1)
 def task_LibConnector_create_connector_db_postgres_1012():
     object_prop = {
-        'host': 'localhost',
+        'host': 'host.docker.internal',
         'port': 5432,
         'database': 'sgkdb',
         'user': 'postgres',
@@ -142,7 +142,7 @@ def task_LibIoRdbms_rdbms_write_prediction_1015():
 @lru_cache(maxsize=1)
 def task_LibConnector_create_connector_db_postgres_1006():
     object_prop = {
-        'host': 'localhost',
+        'host': 'host.docker.internal',
         'port': 5432,
         'database': 'dataml',
         'user': 'postgres',
@@ -190,6 +190,8 @@ def init_flow():
 
 
 if __name__ == "__main__":
+    in_port = ("a", "b")
+
     print("Flow Start >> " + PRM["PRM_FLOW_ID"])
     parser = argparse.ArgumentParser()
     parser.add_argument("--PRM_EXTRA", type=str, default="{}")

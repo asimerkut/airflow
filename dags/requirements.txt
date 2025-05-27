@@ -7,6 +7,7 @@ ollama>=0.1.6          # For Ollama API client
 sentence-transformers>=2.2.2  # For BioBERT integration
 torch>=2.2.0     # PyTorch CPU-only version (BioBERT runs on CPU)
 einops>=0.8.1    # Required for Nomic BERT model tensor operations
+pyspark==3.5.5  # For Spark integration
 
 # Note: The following packages are not included here as they will be provided by the Airflow Docker image:
 # - Apache Airflow

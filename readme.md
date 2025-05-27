@@ -18,7 +18,7 @@ minikube service -n airflow airflow-webserver
 helm upgrade airflow apache-airflow/airflow \
   -n airflow -f values.yaml
 
-# İttermeli update 
+# ittirmeli update 
 helm upgrade airflow apache-airflow/airflow -n airflow -f values.yaml --force
 
 

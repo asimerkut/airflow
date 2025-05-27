@@ -39,6 +39,7 @@ version = 1
 data_path = '/opt/airflow/dags/repo/dags/data/'
 
 connector_map = dict()
+cmp = {}
 
 def task_LibConnector_create_connector_db_postgres_1012():
     object_prop = {
@@ -55,6 +56,20 @@ def task_LibConnector_create_connector_db_postgres_1012():
     object_vars, connector_instance = lib_connector.create_connector_db_postgres(cmp=cmp, object_prop=object_prop, object_vars=object_vars)
     return [object_vars, connector_instance]
 
+def task_LibConnector_create_connector_db_postgres_1006():
+    object_prop = {
+        'host': 'localhost',
+        'port': 5432,
+        'database': 'dataml',
+        'user': 'postgres',
+        'password': 'postgres',
+    }
+    object_vars = {
+        'varmi': 'yokmu',
+    }
+
+    object_vars, connector_instance = lib_connector.create_connector_db_postgres(cmp=cmp, object_prop=object_prop, object_vars=object_vars)
+    return [object_vars, connector_instance]
 
 
 connector_map["1012"] = task_LibConnector_create_connector_db_postgres_1012()
@@ -72,11 +87,17 @@ def task_LibCustom_etl_query_1009(**context):
     }
 
     object_vars, df_query = lib_custom.etl_query(cmp=cmp, object_prop=object_prop, object_vars=object_vars, rdbms_connector=rdbms_connector)
+    print(df_query.head())
     return [object_vars, df_query]
 
 
 with DAG('dag_flow_01', default_args=default_args, schedule_interval=None) as dag:
 
+    task_LibCustom_etl_query_1009 = PythonOperator(
+        task_id='task_LibCustom_etl_query_1009',
+        python_callable=task_LibCustom_etl_query_1009,
+        op_kwargs={'file_path': data_path+'iris1.csv'}
+    )
 
-task_LibCustom_etl_query_1009
+    task_LibCustom_etl_query_1009
 

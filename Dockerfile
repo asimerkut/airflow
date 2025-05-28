@@ -7,6 +7,8 @@ RUN apt-get install -y nano
 RUN apt-get install -y libgomp1
 RUN apt-get install -y openjdk-17-jdk
 
+RUN mkdir -p /app && chmod -R 777 /app
+
 USER airflow
 
 # Copy DAGs requirements file

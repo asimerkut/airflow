@@ -12,7 +12,7 @@ from src.auto.util.enum_util import FsTypeEnum
 
 def get_flow_path(flow_id):
     flow_path = env.PRM_FLOW_PATH + "/" + str(flow_id).replace("-", "")
-    if not os.path.exists(flow_path):
+    if env.fs_type == FsTypeEnum.lfs and not os.path.exists(flow_path):
         os.makedirs(flow_path, 0o777, exist_ok=True)
     return flow_path
 
@@ -20,7 +20,7 @@ def get_flow_path(flow_id):
 def get_node_path(flow_id, node_no):
     flow_path = get_flow_path(flow_id)
     node_path = flow_path + "/" + str(node_no)
-    if not os.path.exists(node_path):
+    if env.fs_type == FsTypeEnum.lfs and not os.path.exists(node_path):
         os.makedirs(node_path, 0o777, exist_ok=True)
     return node_path
 
@@ -46,13 +46,13 @@ def write_file_blob(file_name, data, mode="w"):
 
 
 def write_file_df(file_name, data):
-    os.makedirs(os.path.dirname(file_name), 0o777, exist_ok=True)
     buffer = io.BytesIO()
     data.to_parquet(buffer, index=False)
     if env.fs_type == FsTypeEnum.s3fs:
         buffer.seek(0)
         sys_io_s3.write_file_s3(buffer, file_name)
     else:
+        os.makedirs(os.path.dirname(file_name), 0o777, exist_ok=True)
         buffer.seek(0)
         with open(file_name, "wb") as f:
             f.write(buffer.getvalue())

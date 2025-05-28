@@ -26,7 +26,7 @@ import src.auto.lib.lib_io_rdbms as lib_io_rdbms
 load_dotenv()
 PRM = dict(
     PRM_FLOW_ID="9c6f81c5-70a7-481d-bb89-adcd2cc81990",
-    PRM_FLOW_NAME="Birliktelik-DB-3",
+    PRM_FLOW_NAME="Birliktelik-DB-4",
     PRM_FLOW_DATE="2025-05-28 21:37:24"
 )
 
@@ -52,6 +52,7 @@ connector_map = dict()
 
 # {'title': '1008', 'nodePlace': ''}
 def node_LibAi_association_fpgrowth_1008():
+    global cmp
     flow_id = PRM.get("PRM_FLOW_ID", None)
     node_no = "1008"
     def_port_in = [None, ('DAT', 'df')]

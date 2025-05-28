@@ -26,7 +26,7 @@ import src.auto.lib.lib_io_rdbms as lib_io_rdbms
 load_dotenv()
 PRM = dict(
     PRM_FLOW_ID="9c6f81c5-70a7-481d-bb89-adcd2cc81990",
-    PRM_FLOW_NAME="Birliktelik-DB-4",
+    PRM_FLOW_NAME="Birliktelik-DB-5",
     PRM_FLOW_DATE="2025-05-28 21:37:24"
 )
 
@@ -73,6 +73,9 @@ def node_LibAi_association_fpgrowth_1008():
 
     }
     connector_field = None
+
+    global cmp
+    cmp = Cmp("local[4]", "9c6f81c5-70a7-481d-bb89-adcd2cc81990")
 
     if connector_field is not None:
         init_conn()

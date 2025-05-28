@@ -184,7 +184,7 @@ def node_LibConnector_create_connector_db_postgres_1012():
     object_port_in = {'input-0': None}
 
     object_prop = {
-        'host': 'localhost',
+        'host': 'host.docker.internal',
         'port': 5432,
         'database': 'sgkdb',
         'user': 'postgres',
@@ -270,7 +270,7 @@ def node_LibConnector_create_connector_db_postgres_1006():
     object_port_in = {'input-0': None}
 
     object_prop = {
-        'host': 'localhost',
+        'host': 'host.docker.internal',
         'port': 5432,
         'database': 'dataml',
         'user': 'postgres',

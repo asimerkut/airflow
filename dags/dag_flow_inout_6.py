@@ -26,8 +26,8 @@ import src.auto.lib.lib_io_rdbms as lib_io_rdbms
 load_dotenv()
 PRM = dict(
     PRM_FLOW_ID="9c6f81c5-70a7-481d-bb89-adcd2cc81990",
-    PRM_FLOW_NAME="Birliktelik-DB-5",
-    PRM_FLOW_DATE="2025-05-28 21:37:24"
+    PRM_FLOW_NAME="Birliktelik-DB-6",
+    PRM_FLOW_DATE="2025-05-29 00:07:53"
 )
 
 default_args = dict(
@@ -52,7 +52,6 @@ connector_map = dict()
 
 # {'title': '1008', 'nodePlace': ''}
 def node_LibAi_association_fpgrowth_1008():
-    global cmp
     flow_id = PRM.get("PRM_FLOW_ID", None)
     node_no = "1008"
     def_port_in = [None, ('DAT', 'df')]
@@ -75,7 +74,7 @@ def node_LibAi_association_fpgrowth_1008():
     connector_field = None
 
     global cmp
-    cmp = Cmp("local[4]", "9c6f81c5-70a7-481d-bb89-adcd2cc81990")
+    cmp = Cmp("local[4]", flow_id)
 
     if connector_field is not None:
         init_conn()
@@ -115,6 +114,9 @@ def node_LibCustom_etl_query_1009():
 
     }
     connector_field = 'rdbms_connector'
+
+    global cmp
+    cmp = Cmp("local[4]", flow_id)
 
     if connector_field is not None:
         init_conn()
@@ -157,6 +159,9 @@ def node_LibEtl_join_1010():
     }
     connector_field = None
 
+    global cmp
+    cmp = Cmp("local[4]", flow_id)
+
     if connector_field is not None:
         init_conn()
 
@@ -198,6 +203,9 @@ def node_LibConnector_create_connector_db_postgres_1012():
 
     }
     connector_field = None
+
+    global cmp
+    cmp = Cmp("local[4]", flow_id)
 
     if connector_field is not None:
         init_conn()
@@ -242,6 +250,9 @@ def node_LibIoRdbms_rdbms_write_prediction_1015():
     }
     connector_field = 'rdbms_connector'
 
+    global cmp
+    cmp = Cmp("local[4]", flow_id)
+
     if connector_field is not None:
         init_conn()
 
@@ -285,6 +296,9 @@ def node_LibConnector_create_connector_db_postgres_1006():
     }
     connector_field = None
 
+    global cmp
+    cmp = Cmp("local[4]", flow_id)
+
     if connector_field is not None:
         init_conn()
 
@@ -324,6 +338,9 @@ def node_LibCustom_etl_query_1007():
     }
     connector_field = 'rdbms_connector'
 
+    global cmp
+    cmp = Cmp("local[4]", flow_id)
+
     if connector_field is not None:
         init_conn()
 
@@ -349,8 +366,6 @@ def node_LibCustom_etl_query_1007():
 
 # Part_Con ##################
 def init_conn():
-    global cmp
-    cmp = Cmp("local[4]", "9c6f81c5-70a7-481d-bb89-adcd2cc81990")
     connector_map["1012"] = node_LibConnector_create_connector_db_postgres_1012()
     connector_map["1006"] = node_LibConnector_create_connector_db_postgres_1006()
 

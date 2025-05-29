@@ -25,8 +25,8 @@ import src.auto.lib.lib_io_rdbms as lib_io_rdbms
 
 load_dotenv()
 PRM = dict(
-    PRM_FLOW_ID="9c6f81c5-70a7-481d-bb89-adcd2cc81990",
-    PRM_FLOW_NAME="Birliktelik-DB-6",
+    PRM_FLOW_ID="9c6f81c5-70a7-481d-bb89-adcd2cc81991",
+    PRM_FLOW_NAME="Tanı Birliktelik Analizi",
     PRM_FLOW_DATE="2025-05-29 00:07:53"
 )
 

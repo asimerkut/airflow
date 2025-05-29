@@ -371,7 +371,7 @@ def init_conn():
 
 
 # Part_Dag ####################
-with DAG(PRM.get("PRM_FLOW_NAME"), default_args=default_args, schedule_interval=None) as dag:
+with DAG(str(PRM.get("PRM_FLOW_NAME")).replace(" ","_"), default_args=default_args, schedule_interval=None) as dag:
     task_LibAi_association_fpgrowth_1008 = PythonOperator(
         task_id="task_LibAi_association_fpgrowth_1008",
         python_callable=node_LibAi_association_fpgrowth_1008,

@@ -1,3 +1,9 @@
+
+helm repo add helm-airflow-proxy https://nexus.keydata.com.tr/repository/helm-airflow-proxy/
+
+export HF_ENDPOINT=https://nexus.keydata.com.tr/repository/huggingface-proxy
+
+
 helm repo add apache-airflow https://airflow.apache.org
 
 helm upgrade --install airflow apache-airflow/airflow \
